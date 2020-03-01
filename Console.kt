@@ -15,11 +15,17 @@ import java.io.FileReader
 import java.time.LocalDateTime
 import java.util.*
 
+/**
+ * Класс, реализующий действия консоли
+ */
 class Console {
     var consoleWorks = true
     var noCommand = true
     val e = InputException("Введенная вами строка не является командой, введите help чтобы получить список всех команд")
     var line: String? = null
+    /**
+     * Метод, реализующий считывание строки и определение, является ли строка командой, а также исполнение этой команды.
+     */
     fun read() {
         while(consoleWorks){
             noCommand = true
@@ -29,6 +35,16 @@ class Console {
                 }
             line = scan.nextLine()
         arr = line!!.split(" ")
+                if (arr[0] == "execute_script"){
+                    if (scriptWorks){
+                        println("В скрипте нельзя использовать команду execute_script во избежание рекурсии")
+                        scriptWorks = false
+                        consoleWorks = false
+                        scan = Scanner(System.`in`)
+                        consoleWorks = true
+                        console.read()
+
+                    }
         manager.commands.forEach(){
             if (arr[0].equals(it.cmd)){
                 it.execute()
@@ -51,11 +67,18 @@ class Console {
                 }
             }
         }
+
+                }
+
     if (arr[0] == "exit"){
         consoleWorks = false
     }
         }}
     }
+
+    /**
+     * Метод, осуществлящий работу с входящим файлом
+     */
     fun checkfile(){
         var mapper = ObjectMapper()
         try {
