@@ -1,37 +1,38 @@
 import StaticFields.arr
+import StaticFields.buf_id
 import StaticFields.collection
 import StaticFields.console
-import StaticFields.filein
-
 import StaticFields.manager
 import StaticFields.scan
-import com.fasterxml.jackson.annotation.JsonProperty
+import StaticFields.scriptWorks
+import StaticFields.userfilename
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import java.io.*
-import com.fasterxml.jackson.databind.util.StdDateFormat
-import com.fasterxml.jackson.databind.SerializationFeature
-import java.lang.Compiler.disable
-
+import commands.Exit
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileReader
+import java.time.LocalDateTime
+import java.util.*
 
 class Console {
     var consoleWorks = true
     var noCommand = true
-    val e = InputException("Введенная вами строка не является командой")
+    val e = InputException("Введенная вами строка не является командой, введите help чтобы получить список всех команд")
     var line: String? = null
     fun read() {
         while(consoleWorks){
             noCommand = true
             while (noCommand){
-        print("Введите команду: ")
+                if(!scriptWorks) {
+                    print("Введите команду: ")
+                }
             line = scan.nextLine()
         arr = line!!.split(" ")
         manager.commands.forEach(){
             if (arr[0].equals(it.cmd)){
                 it.execute()
                 noCommand = false
-
             }
             else {
                 try{
@@ -41,6 +42,12 @@ class Console {
                 }}
                 catch(e: InputException){
                     println(e)
+                    if (scriptWorks){
+                        println("чтение файла остановлено, получена инвалидная строка")
+                        scriptWorks = false
+                        consoleWorks = false
+                        scan = Scanner(System.`in`)
+                    }
                 }
             }
         }
@@ -49,19 +56,49 @@ class Console {
     }
         }}
     }
-
     fun checkfile(){
-        val mapper = ObjectMapper()
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        var mapper = ObjectMapper()
         try {
-            var list: HashSet<Ticket> = mapper.readValue(FileReader("collection.txt"))
+            val fileInput = FileInputStream(File(userfilename))
+            val reader = BufferedInputStream(fileInput)
+            val list: Array<Ticket>? = (mapper.readValue(reader, Array<Ticket>::class.java) ?: throw UserFileException())
+            reader.close()
+            fileInput.close()
+            var array = listOf(Long)
+            collection = list!!.toHashSet()
+            var max: Long = 0
+            collection.forEach(){ ticket ->
+                var tick = ticket
+                if (tick.id>max){
+                    max = tick.id
+                }
+                var counter = 0
+                collection.forEach(){
+                    if (tick.id == it.id){
+                        counter += 1
+                    }
+                }
+                if (counter > 1){
+                    collection = hashSetOf()
+                    buf_id = 1
+                    println("В коллекции были найдены элементы с одинаковым id, считывание не удалось")
+                }
+                var datetime = LocalDateTime.parse(ticket.creationDate)
+                if (datetime> LocalDateTime.now()){
+                    collection = hashSetOf()
+                    println("В коллекции найден элемент, созданный в будущем, считывание не удалось")
+                }
+                buf_id = max + 1
+
+            }
+        }
+        catch(e: UserFileException){
+            println("файл пуст, создается пустая коллекция")
         }
         catch(e: Exception){
-            print(e)
-        }
+           println("проблемы с входным файлом, работаем с пустой коллекцией")
+            collection = hashSetOf()
+            }
+
     }
 }
-
-
-
-
