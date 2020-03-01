@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonProperty
-
+/**
+ * Класс, являющийся полем класса Ticket.
+ */
 class Location {
     @JsonProperty("x")
     private var lx: Long = 0
@@ -18,4 +20,12 @@ class Location {
     constructor(){
 
     }
+
+    /**
+     * Метод, отвечающий за отображение объекта в строке.
+     */
+    override fun toString(): String {
+        return "Location(x=$lx, y=$ly, z=$lz, name='$lname')"
+    }
+
 }

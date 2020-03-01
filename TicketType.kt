@@ -1,3 +1,6 @@
+/**
+ * Класс, являющийся полем класса Ticket.
+ */
 enum class TicketType {
     VIP(3),
     USUAL(2),

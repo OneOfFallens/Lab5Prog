@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonProperty
-
+/**
+ * Класс, являющийся полем класса Ticket.
+ */
 class Person {
     @JsonProperty("weight")
     private var pheight: Float = 0.0F
@@ -16,7 +18,10 @@ class Person {
 
     }
 
+    /**
+     * Метод, отвечающий за отображение объекта класса в строке.
+     */
     override fun toString(): String {
-        return "Person(height=$pheight, weight=$pweight, location=$plocation)"
+        return "Person(height=$pheight, weight=$pweight, location=${plocation.toString()})"
     }
 }

@@ -9,7 +9,9 @@ import java.time.LocalDateTime
 
 @JsonAutoDetect
 @JsonDeserialize(`as` = Ticket::class)
-
+/**
+ * Класс, коллекция которого реализуется в программе.
+ */
 public class Ticket: Comparable<Ticket>  {
     @JsonProperty("id")
     private var tid: Long = 0
@@ -52,6 +54,10 @@ public class Ticket: Comparable<Ticket>  {
     }
     val creationDate: String
         get() = this.tcreationDate
+
+    /**
+     * Метод, отвечающий за отображение объекта класса в строке.
+     */
     override fun toString(): String {
         return "Ticket(id=$tid, name='$tname', coordinates=$tcoordinates, creationDate=$tcreationDate, price=$tprice, type=$ttype, person=$tperson)"
     }
