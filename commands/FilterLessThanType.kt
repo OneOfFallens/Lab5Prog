@@ -1,23 +1,23 @@
 package commands
 
-import StaticFields.arr
-import StaticFields.collection
-import StaticFields.console
+import Console
+import Storage
 import TicketType
 /**
  * Класс, реализующий команду filter_less_than_type, отображающие элементы, у которых значение типа меньше, чем заданное
  */
-class FilterLessThanType : AbstractCommand() {
+class FilterLessThanType(gstor: Storage) : AbstractCommand() {
     override var cmd = "filter_less_than_type"
+    var stor = gstor
     override var info = "вывести элементы, значение поля type которых, меньше чем заданное "
     /**
      * Метод, отвечающий за выполнение команды
      */
-    override fun execute(){
+    override fun execute(console: Console){
         var type: TicketType?
-        if (arr.size == 2) {
+        if (console.stor.parr.size == 2) {
             var searchValue: Int = -2
-            when (arr[1]) {
+            when (console.stor.parr[1]) {
                 "VIP" -> type = TicketType.VIP
                 "USUAL" -> type = TicketType.USUAL
                 "BUDGETARY" -> type = TicketType.BUDGETARY
@@ -29,12 +29,12 @@ class FilterLessThanType : AbstractCommand() {
             var wasFound: Boolean = false
             if (type !=null){
                 searchValue = type.value}
-            collection.forEach {
+            console.stor.pcollection.forEach {
                 if (it.type!!.value < searchValue) {
                     println(it.toString())
                     wasFound = true
                 } else {
-                    if (it.equals(collection.last()) and (!wasFound)) {
+                    if (it.equals(console.stor.pcollection.last()) and (!wasFound)) {
                         println("Билеты с ниже этого типа не найдены ")
                     }
                 }

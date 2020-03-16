@@ -1,30 +1,29 @@
 package commands
 
-import StaticFields.collection
-import StaticFields.console
+import Console
 import Person
 import Ticket
 import TicketType
 import Coordinates
 import Location
 import InputException
-import StaticFields.buf_id
-import StaticFields.scan
-import StaticFields.scriptWorks
+import Storage
 import java.time.LocalDateTime
 
 /**
  * Класс, реализующий команду add, доавляющую элемент в коллекцию
  */
-class Add: AbstractCommand() {
+class Add constructor(gstor: Storage): AbstractCommand() {
     override var cmd = "add"
     override var info = "добавляет новый элемент в коллекцию"
+    var stor = gstor
     /**
      * Метод, отвечающий за выполнение команды
      */
-    override fun execute() {
-        var id: Long = StaticFields.buf_id
-        StaticFields.buf_id += 1
+    override fun execute(console: Console) {
+        var id: Long =  console.stor.pbuf_id
+
+        console.stor.setBufId(console.stor.pbuf_id + 1)
         var name: String
         var coordinates: Coordinates
         var creationDate: String = LocalDateTime.now().toString()
@@ -32,29 +31,29 @@ class Add: AbstractCommand() {
         var price: Long
         var type: TicketType? = null
         while(true) {
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите название: ")
             }
-            try {
-                name = scan.nextLine() ?: throw InputException("Строка не может быть null")
-                if (name == "") {
-                    throw InputException("Строка не может быть пустой")
+                try {
+                    name = console.stor.pscan.nextLine() ?: throw InputException("Строка не может быть null")
+                    if (name == "") {
+                        throw InputException("Строка не может быть пустой")
+                    }
+                    break
+                } catch (e: InputException) {
+                    println(e)
+                    return
                 }
-                break
             }
-            catch(e: InputException){
-                println(e)
-                return
-            }
-        }
+
         var strx: String
         var x: Long
         while(true) {
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите координату по Х: ")
             }
             try {
-                strx = scan.nextLine() ?: throw InputException("Строка не подходит по формату")
+                strx = console.stor.pscan.nextLine() ?: throw InputException("Строка не подходит по формату")
                 x = strx.toLong()
                 break
             }
@@ -68,10 +67,10 @@ class Add: AbstractCommand() {
         var stry: String
         var y: Double = 0.0
         try {
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите координату по Y: ")
             }
-            stry = scan.nextLine() ?: throw InputException("Число не подходит по формату")
+            stry = console.stor.pscan.nextLine() ?: throw InputException("Число не подходит по формату")
             y = stry.toDouble()
             if (y< -103){
                 throw InputException("Число не входит в заданный диапазон")
@@ -86,11 +85,11 @@ class Add: AbstractCommand() {
         coordinates = Coordinates(x, y)
         var strprice: String
         while(true){
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите цену: ")
             }
         try {
-            strprice = scan.nextLine() ?: throw InputException("Введенная строка не подходит по формату, повторите ввод")
+            strprice = console.stor.pscan.nextLine() ?: throw InputException("Введенная строка не подходит по формату, повторите ввод")
             price = strprice.toLong()
             if (price < 0){
                 throw InputException("Числовое значение некорректно, поторите ввод")
@@ -106,10 +105,10 @@ class Add: AbstractCommand() {
         }
         var noType = true
         while (noType) {
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите тип билета (VIP, USUAL, BUDGETARY, CHEAP): ")
             }
-        var strtype: String? = scan.nextLine()
+        var strtype: String? = console.stor.pscan.nextLine()
         var eType = InputException("То, что вы ввели, не является типом билета, повторите ввод")
             when (strtype) {
                 "VIP" -> {
@@ -138,8 +137,8 @@ class Add: AbstractCommand() {
                 }
                 else -> {
                     println(eType)
-                    if (scriptWorks){
-                      scriptWorks = false
+                    if (console.stor.pscriptWorks){
+                        console.stor.setScriptWorks(false)
                     }
                 }
             }
@@ -148,11 +147,11 @@ class Add: AbstractCommand() {
         var locy: Float
         var locz: Float
         while (true){
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите координату по Х: ")
             }
             try {
-                var strlocx: String = scan.nextLine() ?: throw InputException("Некорректное значение")
+                var strlocx: String = console.stor.pscan.nextLine() ?: throw InputException("Некорректное значение")
                 locx = strlocx.toLong()
                 break
             }
@@ -164,11 +163,11 @@ class Add: AbstractCommand() {
             }
         }
         while (true){
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите координату по Y: ")
             }
             try {
-                var strlocy: String = scan.nextLine() ?: throw InputException("Некорректное значение")
+                var strlocy: String = console.stor.pscan.nextLine() ?: throw InputException("Некорректное значение")
                 locy = strlocy.toFloat()
                 break
             }
@@ -180,11 +179,11 @@ class Add: AbstractCommand() {
             }
         }
         while (true){
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите координату по Z: ")
             }
             try {
-                var strlocz: String = scan.nextLine() ?: throw InputException("Некорректное значение")
+                var strlocz: String = console.stor.pscan.nextLine() ?: throw InputException("Некорректное значение")
                 locz = strlocz.toFloat()
                 break
             }
@@ -197,11 +196,11 @@ class Add: AbstractCommand() {
         }
         var locname: String
         while (true) {
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите название локации: ")
             }
             try {
-                locname = scan.nextLine() ?: throw InputException("Введена пустая строка")
+                locname = console.stor.pscan.nextLine() ?: throw InputException("Введена пустая строка")
                 if (locname.length > 852){
                     throw InputException("Слишком длинная строка, повторите ввод")
                 }
@@ -214,12 +213,12 @@ class Add: AbstractCommand() {
         val location = Location(locx, locy, locz, locname)
         var height: Float
         while(true){
-            if(!scriptWorks) {
+            if(!console.stor.pscriptWorks) {
                 print("Введите рост человека: ")
             }
-        try{ var strheight: String = scan.nextLine() ?: throw InputException("Получена пустая строка, повторите ввод")
+        try{ var strheight: String = console.stor.pscan.nextLine() ?: throw InputException("Получена пустая строка, повторите ввод")
         height = strheight.toFloat()
-            if (height < 0.0) {
+            if (height <= 0.0) {
                 throw InputException("Число не подходит по формату")
             }
         break}
@@ -231,11 +230,11 @@ class Add: AbstractCommand() {
         }}
         var weight: Double?
         while(true) {
-            if (!scriptWorks) {
+            if (!console.stor.pscriptWorks) {
                 print("Введите вес человека: ")
             }
             try{
-            var strweight: String = scan.nextLine() ?: throw InputException("Введенная вами строка не соотвествует формату")
+            var strweight: String = console.stor.pscan.nextLine() ?: throw InputException("Введенная вами строка не соотвествует формату")
             weight = strweight.toDouble()
                 if (weight < 0.0) {
                     throw InputException("Введенная вами строка не соотвествует формату")
@@ -250,8 +249,8 @@ class Add: AbstractCommand() {
         }
         val person: Person = Person(height, weight, location)
         val newTicket: Ticket = Ticket(id, name, coordinates, creationDate, price, type, person)
-        collection.add(newTicket)
-        println("Элемент создан, ему присвоено id = ${buf_id-1}")
+        console.stor.pcollection.add(newTicket)
+        println("Элемент создан, ему присвоено id = ${console.stor.pbuf_id-1}")
     }
     fun getString(){
 
