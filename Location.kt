@@ -1,7 +1,11 @@
+import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+
 /**
  * Класс, являющийся полем класса Ticket.
  */
+
 class Location {
     @JsonProperty("x")
     private var lx: Long = 0
@@ -20,7 +24,14 @@ class Location {
     constructor(){
 
     }
-
+    val x: Long
+         get() = this.lx
+    val y: Float
+         get() = this.ly
+    val z: Float
+     get() = this.lz
+    val name: String
+         get() = this.lname
     /**
      * Метод, отвечающий за отображение объекта в строке.
      */

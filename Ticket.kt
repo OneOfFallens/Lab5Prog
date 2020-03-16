@@ -26,7 +26,7 @@ public class Ticket: Comparable<Ticket>  {
     private var tprice: Long = 0
     @JsonProperty("type")
     private var ttype: TicketType? = null
-    @JsonProperty("Person")
+    @JsonProperty("person")
     @JsonDeserialize(`as` = Person::class)
     private var tperson: Person = Person(0.0F, 0.0, null)
     @JsonIgnore
@@ -44,11 +44,17 @@ public class Ticket: Comparable<Ticket>  {
     }
     val id: Long
          get() = this.tid
-
+    val person: Person
+         get() = this.tperson
     val price: Long
          get() = this.tprice
     val type: TicketType?
          get() = this.ttype
+    val name: String
+         get() = this.tname
+    val coordinates: Coordinates
+         get() = this.tcoordinates
+
     override fun compareTo(t: Ticket): Int {
         return (this.id - t.tid).toInt()
     }

@@ -22,5 +22,6 @@ public class Coordinates {
     override fun toString(): String {
         return "Coordinates(x=$cx, y=$cy)"
     }
-
+    val y: Double
+        get() = this.cy
 }
